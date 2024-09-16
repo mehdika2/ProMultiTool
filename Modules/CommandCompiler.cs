@@ -1,10 +1,8 @@
-﻿using Microsoft.CSharp;
+﻿using ProMultiTool.Modules.Editor;
 using ProMultiTool.PluginBusinnes;
 using ProTool.Classes;
 using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Configuration.Assemblies;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -13,22 +11,28 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ProMultiTool.Modules.Editor
+namespace ProTool.Modules
 {
-	class CommandEditor : IBuiltInCommand
+	internal class CommandCompiler : IBuiltInCommand
 	{
-		public string Name
-		{
-			get
-			{
-				return "Editor";
-			}
-		}
+		public string Name => "Compiler";
 
 		public void Execute()
 		{
-			EditorForm form = new EditorForm();
-			form.Text = "Plugin development";
+			EditorForm form = new EditorForm(@"using System;
+
+namespace Application
+{
+    class Program
+    {
+        static void Main()
+        {
+            Console.WriteLine(""Hello World"");
+        }
+    }
+}
+");
+			form.Text = "C# Compiler";
 			form.Show();
 			form.Activate();
 			form.CompileScript += Form_CompileScript;
@@ -39,16 +43,16 @@ namespace ProMultiTool.Modules.Editor
 		{
 			Console.WriteLine("Compiling script...");
 
-			Regex regex = new Regex(@"public\s+string\s+Name\s*{\s*get\s*{\s*return\s*""(?<nameValue>[^""]+)"";\s*}\s*}");
+			Regex regex = new Regex(@"namespace\s+([a-zA-Z_]\w*)\s*{");
 			Match match = regex.Match(script);
 
 			if (match.Success)
 			{
-				string nameValue = match.Groups["nameValue"].Value;
+				string nameValue = match.Groups[1].Value;
 				try
 				{
-					CompilerAgent.CompileScriptAsDll(script, Path.Combine(Directory.GetCurrentDirectory(), "Plugins", nameValue + ".dll"));
-					Console.WriteLine("Successfuly compiled to Plugins\\" + nameValue + ".dll");
+					CompilerAgent.CompileScriptAsExe(script, Path.Combine(Directory.GetCurrentDirectory(), "Plugins", nameValue + ".exe"));
+					Console.WriteLine("Successfuly compiled to Plugins\\" + nameValue + ".exe");
 				}
 				catch (Exception ex)
 				{

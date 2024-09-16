@@ -14,7 +14,7 @@ namespace ProTool.Modules
 {
 	internal class CommandScript : IBuiltInCommand
 	{
-		public string Name => "script";
+		public string Name => "Script";
 
 		public void Execute()
 		{
@@ -54,15 +54,16 @@ namespace Application
 
 						if (parameters.Length == 0)
 						{
-							// If no parameters, invoke it directly
+							Console.WriteLine("[START SCRIPT]");
 							entryPoint.Invoke(null, null);
+							Console.WriteLine("[SCRIPT DONE]");
 						}
 						else if (parameters.Length == 1 && parameters[0].ParameterType == typeof(string[]))
 						{
-							// If it accepts a string[] (command-line arguments), pass in an empty array or provide your arguments
-							string[] argsForMain = new string[] { "arg1", "arg2" }; // Or use an empty array: new string[0]
+							Console.WriteLine("[START SCRIPT]");
+							string[] argsForMain = new string[0];
 							entryPoint.Invoke(null, new object[] { argsForMain });
-							Console.WriteLine("Script successfuly finished!");
+							Console.WriteLine("[SCRIPT DONE]");
 						}
 						else
 						{

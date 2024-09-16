@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\CompilerAgent.cs" />
+    <Compile Include="Modules\CommandCompiler.cs" />
     <Compile Include="Modules\CommandScript.cs" />
     <Compile Include="Modules\CommandEditor.cs" />
     <Compile Include="Modules\EditorForm.cs">

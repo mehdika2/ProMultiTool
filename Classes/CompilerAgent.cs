@@ -53,7 +53,7 @@ namespace ProTool.Classes
 			return true;
 		}
 
-		public static bool CompileScriptAsFile(string script, string assemblyPath)
+		public static bool CompileScriptAsDll(string script, string assemblyPath)
 		{
 			// Create a compiler instance
 			CSharpCodeProvider provider = new CSharpCodeProvider();
@@ -64,6 +64,49 @@ namespace ProTool.Classes
 				GenerateExecutable = false, // Generate a DLL
 				GenerateInMemory = true, // Compile in memory
 				OutputAssembly = assemblyPath,
+				ReferencedAssemblies =
+			{
+				"System.dll",
+				"System.Data.dll",
+				"System.Drawing.dll",
+				"System.Windows.Forms.dll",
+				"System.Net.Http.dll",
+				"System.Xml.dll",
+				"System.Xml.Linq.dll",
+					"System.Core.dll",
+				Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppDomain.CurrentDomain.FriendlyName))
+			}
+			};
+
+			// Compile the code
+			CompilerResults results = provider.CompileAssemblyFromSource(parameters, script);
+
+			// Check for compilation errors
+			if (results.Errors.HasErrors)
+			{
+				foreach (CompilerError error in results.Errors)
+				{
+					Console.WriteLine($"Error: {error.ErrorText}");
+				}
+				return false;
+			}
+
+			return true;
+		}
+
+		public static bool CompileScriptAsExe(string script, string assemblyPath)
+		{
+			// Create a compiler instance
+			CSharpCodeProvider provider = new CSharpCodeProvider();
+
+			// Set compiler parameters
+			CompilerParameters parameters = new CompilerParameters
+			{
+				GenerateExecutable = false, // Generate a DLL
+				GenerateInMemory = true, // Compile in memory
+				OutputAssembly = assemblyPath,
+				CompilerOptions = "/t:exe",
+				TreatWarningsAsErrors = false,
 				ReferencedAssemblies =
 			{
 				"System.dll",
