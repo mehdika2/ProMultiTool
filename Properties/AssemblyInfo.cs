@@ -5,13 +5,13 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ProTool")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Pro Multi Tool")]
+[assembly: AssemblyDescription("Module based multi tool cross-platform written with C# ")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ProTool")]
-[assembly: AssemblyCopyright("Copyright ©  2024")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyProduct("ProMultiTool")]
+[assembly: AssemblyCopyright("Free")]
+[assembly: AssemblyTrademark("Mahdi khalilzadeh")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
