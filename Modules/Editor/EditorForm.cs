@@ -9,11 +9,14 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static ScintillaNET.Style;
 
 namespace ProMultiTool.Modules.Editor
 {
 	public partial class EditorForm : Form
 	{
+		public delegate void ScriptCompileEventHandler(object sender, string script, string assemblyName);
+		public event ScriptCompileEventHandler CompileScript;
 		private Scintilla scriptEditor;
 
 		public EditorForm()
@@ -35,7 +38,7 @@ namespace MYPLUGIN
 {
     class PLUGIN : IPlugin
     {
-        public string Name { get { return ""MYPLUGIN"" } }
+        public string Name { get { return ""MYPLUGIN""; } }
         public void Run()
         {
             Console.WriteLine(""Hello World"");
@@ -189,5 +192,93 @@ namespace MYPLUGIN
 			}
 		}
 
+		string workingFile = "";
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+		{
+			try
+			{
+				if (keyData == Keys.F5)
+				{
+					Regex regex = new Regex(@"public\s+string\s+Name\s*{\s*get\s*{\s*return\s*""(?<nameValue>[^""]+)"";\s*}\s*}");
+					Match match = regex.Match(scriptEditor.Text);
+
+					if (match.Success)
+					{
+						string nameValue = match.Groups["nameValue"].Value;
+						CompileScript(this, scriptEditor.Text, nameValue);
+						Console.WriteLine("Successfuly compiled to " + nameValue + ".dll");
+					}
+					else
+					{
+						Console.WriteLine("No name found for plugin");
+					}
+				}
+				else if (keyData == (Keys.Control | Keys.S))
+				{
+					if (workingFile == "")
+						SaveDialog();
+					else
+					{
+						try
+						{
+							System.IO.File.WriteAllText(workingFile, scriptEditor.Text);
+						}
+						catch (Exception ex)
+						{
+							MessageBox.Show("Error: " + ex.Message, "Save faild", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						}
+					}
+				}
+				else if (keyData == (Keys.Control | Keys.Shift | Keys.S))
+				{
+					SaveDialog();
+				}
+				else if (keyData == (Keys.Control | Keys.O))
+				{
+					OpenFileDialog open = new OpenFileDialog();
+					open.Title = "Load script from...";
+					open.Filter = "CSharp script file (*.cs)|*.cs|All types (*.*)|*.*";
+					if (open.ShowDialog() == DialogResult.OK)
+					{
+						try
+						{
+							scriptEditor.Text = System.IO.File.ReadAllText(open.FileName);
+						}
+						catch (Exception ex)
+						{
+							MessageBox.Show("Error: " + ex.Message, "Load faild", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						}
+					}
+				}
+				else return false;
+				return true;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("Error: " + ex.Message);
+				return true;
+			}
+			return base.ProcessCmdKey(ref msg, keyData);
+		}
+
+		void SaveDialog()
+		{
+			SaveFileDialog save = new SaveFileDialog();
+			save.Title = "Save script as...";
+			save.FileName = "Script.cs";
+			save.Filter = "CSharp script file (*.cs)|*.cs|All types (*.*)|*.*";
+			if (save.ShowDialog() == DialogResult.OK)
+			{
+				try
+				{
+					System.IO.File.WriteAllText(save.FileName, scriptEditor.Text);
+					workingFile = save.FileName;
+				}
+				catch (Exception ex)
+				{
+					MessageBox.Show("Error: " + ex.Message, "Save faild", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+			}
+		}
 	}
 }

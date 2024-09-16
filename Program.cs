@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application = System.Windows.Forms.Application;
+using System.Reflection;
 
 namespace ProMultiTool
 {
@@ -15,21 +17,34 @@ namespace ProMultiTool
 
         [STAThread]
         static void Main(string[] args)
-        {
-            Console.Title = "Pro Multi Tool";
-
-            pluginManager = new PluginManager();
-            pluginManager.LoadPlugins("Plugins");
+		{
+			Application.EnableVisualStyles();
+			Application.SetCompatibleTextRenderingDefault(false);
+			Console.Title = "Pro Multi Tool";
 
             //var items = new string[] { "Hello", "This", "Is the test menu", "Im gonna test it", "So far yea", "Thats awesome i know", "You know this", "is awesome yoo"
             //, "yoo ghag, sup", "sup yoo boye", "hows going on ?", "password manager", "raz", "openssl", "encryption", "signiture/verify"};
 
-            var items = pluginManager.Plugins.Select(i => i.Key.Name).ToArray();
-
-            menuItems = PutMenuItems(items);
+            LoadPlugins();
 
             ControlMenu();
         }
+
+        static void LoadPlugins()
+        {
+			pluginManager = new PluginManager();
+			var errors = pluginManager.LoadPlugins("Plugins");
+			if (errors.Any())
+			{
+				Console.Write("Continue ? . . . ");
+				Console.ReadKey();
+				Console.Clear();
+			}
+
+			var items = pluginManager.Plugins.Select(i => i.Key.Name).ToArray();
+
+			menuItems = PutMenuItems(items);
+		}
 
         static void ControlMenu()
         {
@@ -63,7 +78,7 @@ namespace ProMultiTool
                     Console.Write(" command: /          ");
                     Console.CursorLeft -= 10;
                 }
-                else if(key.Key == ConsoleKey.Enter)
+                else if (key.Key == ConsoleKey.Enter)
                 {
                     ExecuteCommand(command, ref oldItem, ref selectedItem);
                     command = string.Empty;
@@ -76,6 +91,11 @@ namespace ProMultiTool
                     oldItem = selectedItem;
                     selectedItem = newSelect;
                     SelectItem(oldItem, selectedItem);
+                }
+                else if (key.Key == ConsoleKey.Backspace)
+                {
+                    command = command.Remove(command.Length - 1, 1);
+                    Console.Write(" \b\b");
                 }
                 else if (command != string.Empty)
                 {
@@ -129,6 +149,14 @@ namespace ProMultiTool
             else
             {
                 command = command.TrimStart('/');
+                if(command.ToLower() == "reload")
+                {
+                    LoadPlugins();
+                    Console.ResetColor();
+                    Console.Clear();
+                    return;
+                }
+
                 int changedSelecte;
                 if (int.TryParse(command, out changedSelecte) && changedSelecte <= menuItems.Count && changedSelecte > 0)
                     ExecutePlugin(ref oldItem, ref selectedItem, changedSelecte - 1);
