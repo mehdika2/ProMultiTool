@@ -48,12 +48,12 @@ namespace ProMultiTool.Modules.Editor
 				try
 				{
 					CompilerAgent.CompileScriptAsFile(script, Path.Combine(Directory.GetCurrentDirectory(), "Plugins", nameValue + ".dll"));
+					Console.WriteLine("Successfuly compiled to " + nameValue + ".dll");
 				}
 				catch (Exception ex)
 				{
 					Console.WriteLine(ex.ToString());
 				}
-				Console.WriteLine("Successfuly compiled to " + nameValue + ".dll");
 			}
 			else
 			{

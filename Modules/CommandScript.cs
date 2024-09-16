@@ -62,6 +62,7 @@ namespace Application
 							// If it accepts a string[] (command-line arguments), pass in an empty array or provide your arguments
 							string[] argsForMain = new string[] { "arg1", "arg2" }; // Or use an empty array: new string[0]
 							entryPoint.Invoke(null, new object[] { argsForMain });
+							Console.WriteLine("Script successfuly finished!");
 						}
 						else
 						{
@@ -72,8 +73,6 @@ namespace Application
 					{
 						Console.WriteLine("No entry point (Main method) found in the assembly.");
 					}
-
-					Console.WriteLine("Script finished!");
 				}
 				else
 				{
