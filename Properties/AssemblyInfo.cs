@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -8,10 +9,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Pro Multi Tool")]
 [assembly: AssemblyDescription("Module based multi tool cross-platform written with C# ")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Mahdi khalilzadeh")]
 [assembly: AssemblyProduct("ProMultiTool")]
-[assembly: AssemblyCopyright("Free")]
-[assembly: AssemblyTrademark("Mahdi khalilzadeh")]
+[assembly: AssemblyCopyright("Copyright (c) 2024, Mahdi khalilzadeh")]
+[assembly: AssemblyTrademark("The MIT License (MIT)")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
@@ -34,3 +35,4 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: NeutralResourcesLanguageAttribute("en-US")]

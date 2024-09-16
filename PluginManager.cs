@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
 
-namespace PluginBusinnes
+namespace ProMultiTool.PluginBusinnes
 {
     internal class PluginManager
     {

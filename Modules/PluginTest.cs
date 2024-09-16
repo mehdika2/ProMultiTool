@@ -1,11 +1,11 @@
-﻿using PluginBusinnes;
+﻿using ProMultiTool.PluginBusinnes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProTool.BuiltInPlugins
+namespace ProMultiTool.BuiltInPlugins
 {
     class PluginTest : IPlugin
     {

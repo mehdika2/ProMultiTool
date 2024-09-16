@@ -1,18 +1,19 @@
-﻿using PluginBusinnes;
-using ProTool.Classes;
+﻿using ProMultiTool.PluginBusinnes;
+using ProMultiTool.Classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProTool
+namespace ProMultiTool
 {
     class Program
     {
         static List<MenuItem> menuItems;
         static PluginManager pluginManager;
 
+        [STAThread]
         static void Main(string[] args)
         {
             Console.Title = "Pro Multi Tool";

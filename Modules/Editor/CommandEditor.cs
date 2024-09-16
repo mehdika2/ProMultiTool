@@ -1,11 +1,12 @@
-﻿using PluginBusinnes;
+﻿using ProMultiTool.PluginBusinnes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
-namespace ProTool.Modules
+namespace ProMultiTool.Modules.Editor
 {
     class CommandEditor : IBuiltInCommand
     {
@@ -19,8 +20,9 @@ namespace ProTool.Modules
 
         public void Execute()
         {
-            Console.WriteLine("Editor!");
-            System.Threading.Thread.Sleep(2000);
-        }
+			Application.EnableVisualStyles();
+			Application.SetCompatibleTextRenderingDefault(false);
+			Application.Run(new EditorForm());
+		}
     }
 }

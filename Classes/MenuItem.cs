@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProTool.Classes
+namespace ProMultiTool.Classes
 {
     class MenuItem
     {
