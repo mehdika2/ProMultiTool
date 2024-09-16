@@ -15,23 +15,23 @@ namespace ProMultiTool.Modules.Editor
 {
 	public partial class EditorForm : Form
 	{
-		public delegate void ScriptCompileEventHandler(object sender, string script, string assemblyName);
+		public delegate void ScriptCompileEventHandler(object sender, string script);
 		public event ScriptCompileEventHandler CompileScript;
 		private Scintilla scriptEditor;
 
-		public EditorForm()
+		public EditorForm(string startScript = null)
 		{
 			InitializeComponent();
-			InitializeScriptEditor();
+			InitializeScriptEditor(startScript);
 		}
 
-		private void InitializeScriptEditor()
+        private void InitializeScriptEditor(string startScript)
 		{
 			scriptEditor = new Scintilla
 			{
 				Dock = DockStyle.Fill,
 				Lexer = Lexer.Cpp,
-				Text = @"using System;
+				Text = startScript ?? @"using System;
 using ProMultiTool.PluginBusinnes;
 
 namespace MYPLUGIN
@@ -199,19 +199,7 @@ namespace MYPLUGIN
 			{
 				if (keyData == Keys.F5)
 				{
-					Regex regex = new Regex(@"public\s+string\s+Name\s*{\s*get\s*{\s*return\s*""(?<nameValue>[^""]+)"";\s*}\s*}");
-					Match match = regex.Match(scriptEditor.Text);
-
-					if (match.Success)
-					{
-						string nameValue = match.Groups["nameValue"].Value;
-						CompileScript(this, scriptEditor.Text, nameValue);
-						Console.WriteLine("Successfuly compiled to " + nameValue + ".dll");
-					}
-					else
-					{
-						Console.WriteLine("No name found for plugin");
-					}
+					CompileScript(this, scriptEditor.Text);
 				}
 				else if (keyData == (Keys.Control | Keys.S))
 				{
@@ -237,7 +225,7 @@ namespace MYPLUGIN
 				{
 					OpenFileDialog open = new OpenFileDialog();
 					open.Title = "Load script from...";
-					open.Filter = "CSharp script file (*.cs)|*.cs|All types (*.*)|*.*";
+					open.Filter = "CSharp script file (*.csx)|*.cs|All types (*.*)|*.*";
 					if (open.ShowDialog() == DialogResult.OK)
 					{
 						try
@@ -266,7 +254,7 @@ namespace MYPLUGIN
 			SaveFileDialog save = new SaveFileDialog();
 			save.Title = "Save script as...";
 			save.FileName = "Script.cs";
-			save.Filter = "CSharp script file (*.cs)|*.cs|All types (*.*)|*.*";
+			save.Filter = "CSharp script file (*.csx)|*.cs|All types (*.*)|*.*";
 			if (save.ShowDialog() == DialogResult.OK)
 			{
 				try

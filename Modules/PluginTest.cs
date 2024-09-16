@@ -5,13 +5,7 @@ namespace ProMultiTool.BuiltInPlugins
 {
     class PluginTest : IPlugin
     {
-        public string Name
-        {
-            get
-            {
-                return "Test";
-            }
-        }
+        public string Name => "Test";
 
         public void Run()
         {
@@ -22,13 +16,7 @@ namespace ProMultiTool.BuiltInPlugins
 
     class Test2 : IPlugin
     {
-        public string Name
-        {
-            get
-            {
-                return "Test2";
-            }
-        }
+        public string Name => "Test2";
 
         public void Run()
         {

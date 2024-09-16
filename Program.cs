@@ -22,9 +22,6 @@ namespace ProMultiTool
 			Application.SetCompatibleTextRenderingDefault(false);
 			Console.Title = "Pro Multi Tool";
 
-            //var items = new string[] { "Hello", "This", "Is the test menu", "Im gonna test it", "So far yea", "Thats awesome i know", "You know this", "is awesome yoo"
-            //, "yoo ghag, sup", "sup yoo boye", "hows going on ?", "password manager", "raz", "openssl", "encryption", "signiture/verify"};
-
             LoadPlugins();
 
             ControlMenu();
