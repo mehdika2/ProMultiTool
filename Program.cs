@@ -15,6 +15,8 @@ namespace ProTool
 
         static void Main(string[] args)
         {
+            Console.Title = "Pro Multi Tool";
+
             pluginManager = new PluginManager();
             pluginManager.LoadPlugins("Plugins");
 
@@ -32,7 +34,7 @@ namespace ProTool
         {
             int oldItem = 0;
             int selectedItem = 0;
-            string typingNumber = string.Empty;
+            string command = string.Empty;
             while (true)
             {
                 DrawMenuItems();
@@ -42,55 +44,41 @@ namespace ProTool
                 Console.CursorVisible = false;
 
                 ConsoleKeyInfo key;
-                if (typingNumber != "")
+                if (command != "")
                 {
                     Console.ForegroundColor = ConsoleColor.Black;
                     Console.BackgroundColor = ConsoleColor.Gray;
-                    Console.SetCursorPosition(typingNumber.Length + 2, Console.WindowHeight - 1);
+                    Console.SetCursorPosition(command.Length + 11, Console.WindowHeight - 1);
                     key = Console.ReadKey();
                 }
                 else key = Console.ReadKey(true);
 
-                if (char.IsNumber(key.KeyChar) && menuItems.Count > 1)
+                if (key.KeyChar == '/')
                 {
-                    if (typingNumber == "")
-                    {
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.BackgroundColor = ConsoleColor.Gray;
-                        Console.SetCursorPosition(0, Console.WindowHeight - 1);
-                        Console.Write(": " + key.KeyChar);
-                    }
-                    typingNumber += key.KeyChar;
-                }
-                else if (key.Key == ConsoleKey.Enter)
-                {
-                    if (typingNumber != "")
-                    {
-                        oldItem = selectedItem;
-                        selectedItem = int.Parse(typingNumber) - 1;
-                        SelectItem(oldItem, selectedItem);
-                        Console.SetCursorPosition(0, Console.WindowHeight - 1);
-                        Console.ResetColor();
-                        Console.Write(new string(' ', Console.WindowWidth - 1));
-                        typingNumber = "";
-                    }
-                    else
-                    {
-                        // execute plugin
-                        Console.ResetColor();
-                        Console.Clear();
-                        pluginManager.Plugins.ElementAt(selectedItem).Key.Run();
-                        Console.ResetColor();
-                        Console.Clear();
-                    }
-                }
-                else if (typingNumber != "")
-                {
-                    // clear typing number if changed method to number to move
+                    command = "/";
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.BackgroundColor = ConsoleColor.Gray;
                     Console.SetCursorPosition(0, Console.WindowHeight - 1);
-                    Console.ResetColor();
-                    Console.Write(new string(' ', Console.WindowWidth - 1));
-                    typingNumber = "";
+                    Console.Write(" command: /          ");
+                    Console.CursorLeft -= 10;
+                }
+                else if(key.Key == ConsoleKey.Enter)
+                {
+                    ExecuteCommand(command, ref oldItem, ref selectedItem);
+                    command = string.Empty;
+                }
+                else if (char.IsNumber(key.KeyChar) && command == string.Empty && menuItems.Count < 10)
+                {
+                    int newSelect = (int)char.GetNumericValue(key.KeyChar) - 1;
+                    if (newSelect >= menuItems.Count)
+                        continue;
+                    oldItem = selectedItem;
+                    selectedItem = newSelect;
+                    SelectItem(oldItem, selectedItem);
+                }
+                else if (command != string.Empty)
+                {
+                    command += key.KeyChar;
                 }
                 else
                     switch (key.Key)
@@ -131,6 +119,55 @@ namespace ProTool
                             break;
                     }
             }
+        }
+
+        private static void ExecuteCommand(string command, ref int oldItem, ref int selectedItem)
+        {
+            if (command == string.Empty)
+                ExecutePlugin(ref oldItem, ref selectedItem, selectedItem);
+            else
+            {
+                command = command.TrimStart('/');
+                int changedSelecte;
+                if (int.TryParse(command, out changedSelecte) && changedSelecte <= menuItems.Count && changedSelecte > 0)
+                    ExecutePlugin(ref oldItem, ref selectedItem, changedSelecte - 1);
+                else 
+                {
+                    var builtInCommand = pluginManager.Commands.FirstOrDefault(i => i.Name.ToLower() == command.ToLower());
+                    if (builtInCommand == null)
+                    {
+                        // clear typing number if changed method to number to move
+                        Console.SetCursorPosition(0, Console.WindowHeight - 1);
+                        Console.ResetColor();
+                        Console.Write(new string(' ', Console.WindowWidth - 1));
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.BackgroundColor = ConsoleColor.Gray;
+                        Console.CursorLeft = 0;
+                        Console.Write(" Unknown command ");
+                        Console.ResetColor();
+                        command = "";
+                    }
+                    else
+                    {
+                        Console.ResetColor();
+                        Console.Clear();
+                        builtInCommand.Execute();
+                        Console.ResetColor();
+                        Console.Clear();
+                    }
+                }
+            }
+        }
+
+        private static void ExecutePlugin(ref int oldItem, ref int selectedItem, int pluginIndex)
+        {
+            oldItem = selectedItem;
+            selectedItem = pluginIndex;
+            Console.ResetColor();
+            Console.Clear();
+            pluginManager.Plugins.ElementAt(selectedItem).Key.Run();
+            Console.ResetColor();
+            Console.Clear();
         }
 
         static void SelectItem(int oldItem, int newItem)

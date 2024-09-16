@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProTool.BuiltInPlugins
 {
-    class Test : IPlugin
+    class PluginTest : IPlugin
     {
         public string Name
         {

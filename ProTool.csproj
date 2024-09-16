@@ -43,7 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BuiltInPlugins\Test.cs" />
+    <Compile Include="Modules\CommandEditor.cs" />
+    <Compile Include="Modules\PluginTest.cs" />
     <Compile Include="Classes\MenuItem.cs" />
     <Compile Include="PluginManager.cs" />
     <Compile Include="Program.cs" />
